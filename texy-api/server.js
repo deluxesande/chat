@@ -3,12 +3,20 @@ const path = require("path");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const connectDB = require("./db/connect");
+require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
 
 // Set up cors
-app.use(cors());
+app.use(
+    cors({
+        origin: true,
+    })
+);
+app.use(express.json());
+app.use("/chats/", require("./routes/chats"));
 
 const io = new Server(server, {
     cors: {
@@ -28,4 +36,16 @@ io.on("connection", (socket) => {
 });
 
 const PORT = 3000 | process.env.PORT;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+
+const startServer = async () => {
+    try {
+        await connectDB(process.env.MONGO_URL);
+        server.listen(PORT, () =>
+            console.log(`Server running on port ${PORT}...`)
+        );
+    } catch {
+        console.log(error);
+    }
+};
+
+startServer();
