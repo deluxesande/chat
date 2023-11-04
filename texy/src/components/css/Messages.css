@@ -1,0 +1,92 @@
+.msg-container {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    padding: 15px;
+    height: calc(100vh - 70px);
+    width: 100%;
+    overflow: hidden;
+}
+
+.msg-container .msg-box {
+    background-color: var(--dark-white);
+    border-radius: 30px;
+    height: 100%;
+    padding: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    position: relative;
+}
+
+.msg-container .msg-box::-webkit-scrollbar {
+    width: 5px;
+}
+
+.msg-container .msg-box::-webkit-scrollbar-thumb {
+    border-radius: 30px;
+    background-color: var(--msg-box-color);
+}
+
+.msg-container .msg-box .time {
+    font-size: 11px;
+}
+
+.msg-container .msg-box .msg-box-container {
+    padding: 10px;
+    max-width: 50%;
+    min-width: 8%;
+    color: var(--dark-white);
+}
+
+.msg-container .msg-box .incoming-msg {
+    background-color: var(--text-box-color);
+    border-radius: 10px 10px 10px 0;
+    align-self: flex-start;
+}
+
+.msg-container .msg-box .outgoing-msg {
+    background-color: var(--text-box-color-sc);
+    border-radius: 10px 10px 0 10px;
+    text-align: right;
+    align-self: flex-end;
+}
+
+.msg-container .msg-box .send-input {
+    width: calc(100% - 30px);
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.msg-container .msg-box .send-input .send-in {
+    padding: 10px 20px;
+    width: 100%;
+    border-radius: 30px;
+    border: 0;
+    outline: 0;
+}
+
+.msg-container .msg-box .send-input .send-in:focus {
+    outline: 2px solid var(--text-box-color);
+}
+
+.msg-container .msg-box .send-input .send-btn {
+    border: 0;
+    outline: 0;
+    padding: 8px;
+    background-color: var(--msg-box-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.msg-container .msg-box .send-input .send-btn .icon {
+    width: 20px;
+    height: 20px;
+}
