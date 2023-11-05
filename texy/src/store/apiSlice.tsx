@@ -1,4 +1,10 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+    BaseQueryFn,
+    FetchArgs,
+    FetchBaseQueryError,
+    createApi,
+    fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 import { userActions } from "./userSlice";
 import { RootState } from "./app";
 
@@ -15,17 +21,21 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
-const baseQueryWithReAuth = async (args, api, extraOptions) => {
+const baseQueryWithReAuth: BaseQueryFn<
+    string | FetchArgs,
+    unknown,
+    FetchBaseQueryError
+> = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
-    if (result?.error?.originalStatus === 403) {
+    if (result.error && result?.error?.status === 403) {
         const refreshResult = await baseQuery(
             "/auth/refresh-tokens",
             api,
             extraOptions
         );
 
-        if (refreshResult?.data) {
+        if (refreshResult.data) {
             const user = api.getState().auth.user;
 
             // Store new token
