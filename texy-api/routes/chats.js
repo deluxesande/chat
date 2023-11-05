@@ -7,8 +7,16 @@ const {
     updateChat,
     deleteChat,
 } = require("../controllers/chats");
+const { verifyAccessToken } = require("../jwt/tokens");
 
-router.route("/").get(getAllChats).post(createChat);
-router.route("/:id").get(getSingleChat).patch(updateChat).delete(deleteChat);
+router
+    .route("/")
+    .get(verifyAccessToken, getAllChats)
+    .post(verifyAccessToken, createChat);
+router
+    .route("/:id")
+    .get(verifyAccessToken, getSingleChat)
+    .patch(verifyAccessToken, updateChat)
+    .delete(verifyAccessToken, deleteChat);
 
 module.exports = router;

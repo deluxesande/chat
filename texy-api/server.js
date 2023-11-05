@@ -16,7 +16,9 @@ app.use(
     })
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/chats/", require("./routes/chats"));
+app.use("/auth/", require("./routes/users"));
 
 const io = new Server(server, {
     cors: {
@@ -40,10 +42,11 @@ const PORT = 3000 | process.env.PORT;
 const startServer = async () => {
     try {
         await connectDB(process.env.MONGO_URL);
-        server.listen(PORT, () =>
-            console.log(`Server running on port ${PORT}...`)
-        );
-    } catch {
+        server.listen(PORT, () => {
+            console.log("MongoDB connected...");
+            console.log(`Server running on port ${PORT}...`);
+        });
+    } catch (error) {
         console.log(error);
     }
 };
