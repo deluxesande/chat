@@ -5,7 +5,7 @@ const signAccessToken = (userID) => {
         const payload = {};
         const secret = process.env.SECRET_ACCESS;
         const options = {
-            expiresIn: "15m",
+            expiresIn: "15s",
             audience: userID,
         };
 
@@ -26,11 +26,9 @@ const verifyAccessToken = (req, res, next) => {
 
     JWT.verify(token, process.env.SECRET_ACCESS, (error, payload) => {
         if (error) {
-            if ((error.name = "JsonWebTokenError")) {
-                res.status(401).json();
-            } else {
-                res.status(401).json(error.message);
-            }
+            const message =
+                error.name === "JsonWebTokenError" ? "" : error.message;
+            res.status(401).json({ message });
         }
 
         req.payload = payload;
@@ -38,7 +36,36 @@ const verifyAccessToken = (req, res, next) => {
     });
 };
 
+const refreshToken = (userID) => {
+    return new Promise((resolve, reject) => {
+        const payload = {};
+        const secret = process.env.REFRESH_ACCESS;
+        const options = {
+            expiresIn: "1y",
+            audience: userID,
+        };
+
+        JWT.sign(payload, secret, options, (error, token) => {
+            if (error) reject(error);
+            resolve(token);
+        });
+    });
+};
+
+const verifyRefreshToken = (token) => {
+    return new Promise((resolve, reject) => {
+        JWT.verify(token, process.env.REFRESH_ACCESS, (error, payload) => {
+            if (error) reject(error);
+            const userID = payload.aud;
+            resolve(userID);
+            next();
+        });
+    });
+};
+
 module.exports = {
     signAccessToken,
     verifyAccessToken,
+    refreshToken,
+    verifyRefreshToken,
 };

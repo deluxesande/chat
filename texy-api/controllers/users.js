@@ -1,6 +1,10 @@
 const User = require("../models/userModel");
 const asyncWrapper = require("../middleware/AsyncWrapper");
-const { signAccessToken } = require("../jwt/tokens");
+const {
+    signAccessToken,
+    refreshToken,
+    verifyRefreshToken,
+} = require("../jwt/tokens");
 
 const registerUser = asyncWrapper(async (req, res) => {
     const user = new User({
@@ -14,8 +18,9 @@ const registerUser = asyncWrapper(async (req, res) => {
 
     const savedUser = await user.save();
     const accessToken = await signAccessToken(savedUser.id);
+    const refreshAccessToken = await refreshToken(savedUser.id);
 
-    res.status(201).json({ accessToken });
+    res.status(201).json({ accessToken, refreshToken: refreshAccessToken });
 });
 
 const loginUser = asyncWrapper(async (req, res) => {
@@ -33,10 +38,23 @@ const loginUser = asyncWrapper(async (req, res) => {
     }
 
     const accessToken = await signAccessToken(user.id);
-    res.status(200).json({ accessToken });
+    const refreshAccessToken = await refreshToken(user.id);
+    res.status(200).json({ accessToken, refreshToken: refreshAccessToken });
+});
+
+const refreshTokens = asyncWrapper(async (req, res) => {
+    const { refreshToken: token } = req.body;
+    if (!refreshToken) res.status(400);
+    console.log(token);
+    const userID = await verifyRefreshToken(token);
+
+    const accessToken = await signAccessToken(userID);
+    const refreshAccessToken = await refreshToken(userID);
+    res.status(200).json({ accessToken, refreshToken: refreshAccessToken });
 });
 
 module.exports = {
     registerUser,
     loginUser,
+    refreshTokens,
 };
