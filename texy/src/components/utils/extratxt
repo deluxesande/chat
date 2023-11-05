@@ -1,13 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-interface Chat {
-    id: number;
-}
-
-export const chatsApi = createApi({
-    reducerPath: "chatApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com" }),
-    tagTypes: ["chats"],
+tagTypes: ["chats"],
     endpoints: (builder) => ({
         getAllChats: builder.query<[], void>({
             query: () => "users/",
@@ -43,13 +34,3 @@ export const chatsApi = createApi({
                 method: "DELETE",
             }),
         }),
-    }),
-});
-
-export const {
-    useGetAllChatsQuery,
-    useGetChatQuery,
-    useAddChatMutation,
-    useUpdateChatMutation,
-    useDeleteChatMutation,
-} = chatsApi;
