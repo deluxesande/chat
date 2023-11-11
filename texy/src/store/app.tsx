@@ -1,15 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { configureStore } from "@reduxjs/toolkit";
-import { apiSlice } from "./apiSlice";
-import userSlice from "./userSlice";
+import authReducer from "./auth/authSlice";
 
 const store = configureStore({
     reducer: {
-        [apiSlice.reducerPath]: apiSlice.reducer,
-        auth: userSlice.reducer,
+        auth: authReducer,
     },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: true,
 });
 
