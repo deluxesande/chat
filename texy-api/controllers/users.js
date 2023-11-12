@@ -7,11 +7,8 @@ const {
 } = require("../jwt/tokens");
 
 const registerUser = asyncWrapper(async (req, res) => {
-    const user = new User({
-        email: "tester1@gmail.com",
-        username: "tester1",
-        password: "qwerty",
-    });
+    const userData = req.body;
+    const user = new User(userData);
     const existsUser = await User.findOne({ username: user.username });
 
     if (existsUser) res.status(409).json({ message: "User exists" });
