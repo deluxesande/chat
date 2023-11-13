@@ -19,7 +19,8 @@ const getSingleChat = asyncWrapper(verifyAccessToken, async (req, res) => {
 });
 
 const createChat = asyncWrapper(verifyAccessToken, async (req, res) => {
-    const chat = await Chat.create({ sender: "John" });
+    console.log(req.user._id);
+    const chat = await Chat.create({ _id: "6551fbf6d006fd3df0c8b12c" });
     res.status(201).json(chat);
 });
 

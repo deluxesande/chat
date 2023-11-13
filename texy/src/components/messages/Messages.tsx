@@ -53,7 +53,7 @@ const Messages = () => {
         socket.on("received_message", (message) => {
             setReceivedMessage(message.message);
         });
-    }, [socket]);
+    }, []);
 
     receivedMessage ? console.log(receivedMessage) : null;
 

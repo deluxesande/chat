@@ -42,7 +42,6 @@ const loginUser = asyncWrapper(async (req, res) => {
 const refreshTokens = asyncWrapper(async (req, res) => {
     const { refreshToken: token } = req.body;
     if (!refreshToken) res.status(400);
-    console.log(token);
     const userID = await verifyRefreshToken(token);
 
     const accessToken = await signAccessToken(userID);
