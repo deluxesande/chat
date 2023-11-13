@@ -1,4 +1,5 @@
 # Setup
+Installing the web application into your workspace
 
 ## Download
 ```bash
