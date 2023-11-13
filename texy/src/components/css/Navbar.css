@@ -32,3 +32,11 @@
     color: var(--white);
     text-decoration: none;
 }
+
+.navbar .btn {
+    padding: 8px 15px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}

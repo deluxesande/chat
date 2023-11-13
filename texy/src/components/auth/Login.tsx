@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { loginUser, reset } from "../../store/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
+import "../css/AuthForms.css";
+
 const Login = () => {
     // Constants
     const { user, isLoading, isSuccess, isError, message } = useSelector(
@@ -43,12 +45,27 @@ const Login = () => {
     }, [user, isError, isLoading, isSuccess, message, dispatch, navigate]);
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" name="username" id="username" />
-            <input type="password" name="password" id="password" />
-            <input type="submit" value="Log in" />
-            <Link to="/register">Sign up</Link>
-        </form>
+        <div className="form-container">
+            <form className="form" onSubmit={handleSubmit}>
+                <h1 className="form-header">Log in</h1>
+                <input
+                    placeholder="Username"
+                    type="text"
+                    name="username"
+                    id="username"
+                />
+                <input
+                    placeholder="Password"
+                    type="password"
+                    name="password"
+                    id="password"
+                />
+                <input className="btn" type="submit" value="Log in" />
+                <Link className="link" to="/register">
+                    Sign up
+                </Link>
+            </form>
+        </div>
     );
 };
 

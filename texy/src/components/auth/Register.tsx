@@ -3,7 +3,9 @@ import { reset, register } from "../../store/auth/authSlice";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/app";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import "../css/AuthForms.css";
 
 const Register = () => {
     const dispatch = useDispatch();
@@ -48,13 +50,39 @@ const Register = () => {
     }, [user, isSuccess, isLoading, isError, message, dispatch, navigate]);
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" name="username" id="username" />
-            <input type="email" name="email" id="email" />
-            <input type="password" name="password1" id="password1" />
-            <input type="password" name="password2" id="password2" />
-            <input type="submit" value="Log in" />
-        </form>
+        <div className="form-container">
+            <form className="form" onSubmit={handleSubmit}>
+                <h1 className="form-header">Sign up</h1>
+                <input
+                    placeholder="Enter username"
+                    type="text"
+                    name="username"
+                    id="username"
+                />
+                <input
+                    placeholder="Enter Email"
+                    type="email"
+                    name="email"
+                    id="email"
+                />
+                <input
+                    placeholder="Enter Password"
+                    type="password"
+                    name="password1"
+                    id="password1"
+                />
+                <input
+                    placeholder="Re-enter password"
+                    type="password"
+                    name="password2"
+                    id="password2"
+                />
+                <input className="btn" type="submit" value="Sign up" />
+                <Link className="link" to="/login">
+                    Log in
+                </Link>
+            </form>
+        </div>
     );
 };
 
