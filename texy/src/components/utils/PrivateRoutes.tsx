@@ -5,7 +5,7 @@ import { RootState } from "../../store/app";
 const PrivateRoutes = () => {
     const { user } = useSelector((state: RootState) => state.auth);
     // Check if their is a user logged in
-    return user.accessToken ? <Outlet /> : <Navigate to="/register" />;
+    return user?.accessToken ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoutes;

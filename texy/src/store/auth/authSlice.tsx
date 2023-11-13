@@ -11,6 +11,11 @@ type User = {
     password: string;
 };
 
+type logUser = {
+    username: string;
+    password: string;
+};
+
 const initialState = {
     user: user ? user : null,
     isLoading: false,
@@ -37,6 +42,28 @@ export const register = createAsyncThunk(
         }
     }
 );
+
+export const loginUser = createAsyncThunk(
+    "auth/login",
+    async (user: logUser, thunkAPI) => {
+        try {
+            return await authService.loginUser(user);
+        } catch (err) {
+            const message =
+                (err.response &&
+                    err.response.data &&
+                    err.response.data.message) ||
+                err.message ||
+                err.toString();
+
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
+    return await authService.logoutUser();
+});
 
 export const authSlice = createSlice({
     name: "auth",
@@ -65,6 +92,25 @@ export const authSlice = createSlice({
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 state.message = action.payload;
+                state.user = null;
+            })
+            .addCase(loginUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.user = action.payload;
+            })
+            .addCase(loginUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                state.message = action.payload;
+                state.user = null;
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
                 state.user = null;
             });
     },

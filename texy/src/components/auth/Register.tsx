@@ -3,21 +3,16 @@ import { reset, register } from "../../store/auth/authSlice";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/app";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
     const dispatch = useDispatch();
     const { user, isLoading, isSuccess, isError, message } = useSelector(
         (state: RootState) => state.auth
     );
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        if (isError) {
-            toast.error(message);
-        }
-        dispatch(reset());
-    }, [user, isSuccess, isLoading, isError, message, dispatch]);
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         // Getting data
@@ -38,6 +33,19 @@ const Register = () => {
             dispatch(register(userData));
         }
     };
+
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+
+        if (isSuccess) {
+            toast.success(`User created.`);
+            navigate("/");
+        }
+
+        dispatch(reset());
+    }, [user, isSuccess, isLoading, isError, message, dispatch, navigate]);
 
     return (
         <form onSubmit={handleSubmit}>
