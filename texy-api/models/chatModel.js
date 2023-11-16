@@ -6,7 +6,19 @@ const ChatSchema = new mongoose.Schema({
         ref: "User",
         required: [true, "Must provide sender"],
         trim: true,
-        maxLength: [20, "Must not exceed 20 characters"],
+        maxLength: [100, "Must not exceed 20 characters"],
+    },
+    receiver: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Must provide receiver"],
+        trim: true,
+        maxLength: [100, "Must not exceed 20 characters"],
+    },
+    message: {
+        type: String,
+        required: [true, "Must provide message"],
+        trim: true,
     },
 });
 

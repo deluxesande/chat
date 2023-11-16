@@ -1,4 +1,5 @@
 const JWT = require("jsonwebtoken");
+const getToken = require("../middleware/GetToken");
 
 const signAccessToken = (userID) => {
     return new Promise((resolve, reject) => {
@@ -20,9 +21,8 @@ const verifyAccessToken = (req, res, next) => {
     if (!req.headers["authorization"]) {
         res.status(401).json({ message: "User not authorized" });
     }
-    const authHeader = req.headers["authorization"];
-    const bearer = authHeader.split(" ");
-    const token = bearer[1];
+
+    const token = getToken(req.headers["authorization"]);
 
     JWT.verify(token, process.env.SECRET_ACCESS, (error, payload) => {
         if (error) {
