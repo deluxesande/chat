@@ -1,3 +1,6 @@
+# Database Structure
+![drawSQL-test-export-2023-11-16](https://github.com/deluxesande/chat/assets/73184798/e67712e6-da68-4660-b407-d58438b45815)
+
 # Setup
 Installing the web application into your workspace
 
