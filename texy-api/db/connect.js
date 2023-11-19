@@ -1,7 +1,7 @@
-const mongoos = require("mongoose");
+const mongoose = require("mongoose");
 
 const connectDB = (url) => {
-    return mongoos.connect(url, {
+    return mongoose.connect(url, {
         useNewUrlParser: true,
         useCreateIndex: true,
         useFindAndModify: false,
