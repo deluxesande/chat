@@ -1,34 +1,51 @@
+import { useEffect, useState } from "react";
 import "../css/Aside.css";
 import MessageBox from "../utils/MessageBox";
 import SearchContainer from "../utils/SearchContainer";
+// import axios from "axios";
+// import { API_URL } from "../../App";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../../store/app";
+import axiosInstance from "../utils/axiosInstance";
+
+type User = {
+    username: string;
+    email: string;
+    password: string;
+    _v: number;
+    _id: string;
+    created: Date;
+};
+
+// type Chat = {
+//     sender: string;
+//     receiver: string;
+//     message: string;
+//     _id: string;
+// };
+
+// type Resp = {
+//     users: User[];
+//     chats: Chat[];
+// };
 
 const Aside = () => {
-    const msgs = [
-        {
-            img: "src/assets/user.jpg",
-            user: "john doe",
-            msg: "Hello",
-            texts: 1,
-        },
-        {
-            img: "src/assets/user.jpg",
-            user: "jane doe",
-            msg: "hi",
-            texts: 1,
-        },
-        {
-            img: "src/assets/user.jpg",
-            user: "kevin hart",
-            msg: "Hello",
-            texts: 2,
-        },
-        {
-            img: "src/assets/user.jpg",
-            user: "will smith",
-            msg: "How are you?",
-            texts: 4,
-        },
-    ];
+    const [users, setUsers] = useState<User[]>([]);
+    // const { user } = useSelector((state: RootState) => state.auth);
+
+    const get_all_users = async () => {
+        // const response = await axios.get(`${API_URL}/auth/users`, {
+        //     headers: {
+        //         authorization: `Bearer ${user.accessToken}`,
+        //     },
+        // });
+
+        const response = await axiosInstance.get("/auth/users");
+
+        if (response.status === 200) {
+            setUsers(response.data.users);
+        }
+    };
 
     const handleClick = () => {
         // To solve the undefined issue
@@ -41,14 +58,18 @@ const Aside = () => {
         }
     };
 
+    useEffect(() => {
+        get_all_users();
+    }, []);
+
     return (
         <div className="aside-container">
             <SearchContainer />
-            {msgs.map((message, index) => (
+            {users.map((user, index) => (
                 <MessageBox
                     key={index}
-                    message={message}
                     onclick={handleClick}
+                    user={user}
                     data-number={index + 1}
                 />
             ))}

@@ -28,6 +28,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
+    socket.broadcast.emit("Welcome", "Welcome to the chat.");
     socket.on("join_room", (room) => {
         socket.join(room);
     });

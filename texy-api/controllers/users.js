@@ -5,6 +5,14 @@ const {
     refreshToken,
     verifyRefreshToken,
 } = require("../jwt/tokens");
+const Chat = require("../models/chatModel");
+
+const getAllUSers = asyncWrapper(async (req, res) => {
+    const users = await User.find();
+    // Implement functionality to return last chat
+    const chat = await Chat.find().sort({ _id: -1 }).limit(1);
+    res.status(200).json({ users, chat });
+});
 
 const registerUser = asyncWrapper(async (req, res) => {
     const userData = req.body;
@@ -54,6 +62,7 @@ const refreshTokens = asyncWrapper(async (req, res) => {
 });
 
 module.exports = {
+    getAllUSers,
     registerUser,
     loginUser,
     refreshTokens,

@@ -4,42 +4,53 @@ import "../css/Messages.css";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/app";
+import { API_URL } from "../../App";
+import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
+
+type Chat = {
+    sender: string;
+    receiver: string;
+    message: string;
+    _id: string;
+};
 
 const Messages = () => {
-    const chats = [
-        {
-            tag: "incoming",
-            msg: "Hello",
-            time: "09:00",
-        },
-        {
-            tag: "outgoing",
-            msg: "Hello too",
-            time: "09:03",
-        },
-    ];
+    const [chats, setChats] = useState<Chat[]>([]);
 
     const { user } = useSelector((state: RootState) => state.auth);
 
-    const socket = user && io("http://localhost:3000");
+    const socket = user && io(API_URL);
 
     const [message, setMessage] = useState("");
-    const [receivedMessage, setReceivedMessage] = useState("");
+
+    const get_chats = async () => {
+        const response = await axios.get(`${API_URL}/chats`, {
+            params: { id: user.user._id },
+            headers: {
+                authorization: `Bearer ${user.accessToken}`,
+            },
+        });
+
+        // Setting the chats
+        if (response.data) {
+            setChats(response.data.chats);
+        }
+    };
 
     const check_if_msg_is_incoming_or_outgoing = () => {
         return chats.map((chat, index) => {
-            if (chat.tag === "incoming") {
+            if (chat?.sender === user.user._id) {
                 return (
                     <div key={index} className="msg-box-container incoming-msg">
-                        <p>{receivedMessage}</p>
+                        <p>{chat?.message}</p>
                         <span className="time">09:00</span>
                     </div>
                 );
-            }
-            if (chat.tag === "outgoing") {
+            } else {
                 return (
                     <div key={index} className="msg-box-container outgoing-msg">
-                        <p>Hello too</p>
+                        <p>{chat.message}</p>
                         <span className="time">09:00</span>
                     </div>
                 );
@@ -49,18 +60,42 @@ const Messages = () => {
 
     const room = user.user._id;
 
-    const handleSend = () => {
+    const handleSend = async () => {
         socket?.emit("join_room", room);
         socket?.emit("send_message", { message, room });
+
+        // const response = await axios.post(
+        //     `${API_URL}/chats`,
+        //     {
+        //         sender: user.user._id,
+        //         receiver: "655b0e963a54e01242d9ae64",
+        //         message,
+        //     },
+        //     {
+        //         headers: {
+        //             authorization: `Bearer ${user.accessToken}`,
+        //         },
+        //     }
+        // );
+
+        const response = await axiosInstance.post("/chats", {
+            sender: user.user._id,
+            receiver: "655b0e963a54e01242d9ae64",
+            message,
+        });
+
+        if (response.status === 201) {
+            get_chats();
+        }
+
+        // Resetting the input box
+        const input = document.querySelector(".send-in") as HTMLInputElement;
+        input.value = "";
     };
 
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        socket?.on("received_message", (message) => {
-            setReceivedMessage(message);
-        });
-    }, [socket]);
+        get_chats();
+    }, []);
 
     return (
         <div className="msg-container">

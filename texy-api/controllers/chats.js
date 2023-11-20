@@ -10,7 +10,7 @@ const getAllChats = asyncWrapper(async (req, res) => {
 });
 
 const getSingleChat = asyncWrapper(async (req, res) => {
-    const id = "6546b25accf64320e4ef967f";
+    const id = req.params.id;
     const chat = await Chat.findOne({ _id: id });
 
     if (!chat) {
@@ -21,17 +21,11 @@ const getSingleChat = asyncWrapper(async (req, res) => {
 });
 
 const createChat = asyncWrapper(async (req, res) => {
-    // Getting the sender from the accessToken passed
-    const user = JWT.verify(
-        getToken(req.headers["authorization"]), // Should return accessToken
-        process.env.SECRET_ACCESS
-    );
-
-    // Get the receiver and message from the frontend
-    const { receiver, message } = req.body;
+    // Get the sender, receiver and message from the frontend
+    const { sender, receiver, message } = req.body;
 
     const chat = await Chat.create({
-        sender: user.aud,
+        sender,
         message,
         receiver,
     });

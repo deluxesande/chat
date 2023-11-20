@@ -43,7 +43,7 @@ const Register = () => {
 
         if (isSuccess) {
             toast.success(`User created.`);
-            navigate("/");
+            navigate("/login");
         }
 
         dispatch(reset());
