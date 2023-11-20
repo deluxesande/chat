@@ -36,7 +36,11 @@ const loginUser = asyncWrapper(async (req, res) => {
 
     const accessToken = await signAccessToken(user.id);
     const refreshAccessToken = await refreshToken(user.id);
-    res.status(200).json({ accessToken, refreshToken: refreshAccessToken });
+    res.status(200).json({
+        user,
+        accessToken,
+        refreshToken: refreshAccessToken,
+    });
 });
 
 const refreshTokens = asyncWrapper(async (req, res) => {

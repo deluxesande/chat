@@ -25,9 +25,6 @@ const io = new Server(server, {
         origin: "http://localhost:5173",
         methods: ["GET", "POST", "PATCH", "DELETE"],
     },
-    key: "key",
-    cert: "cert",
-    certificate: "certificate"
 });
 
 io.on("connection", (socket) => {
