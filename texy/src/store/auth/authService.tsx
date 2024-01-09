@@ -1,7 +1,5 @@
 import axios from "axios";
 
-const URL = "http://localhost:3000/auth";
-
 type User = {
     username: string;
     email: string;
@@ -14,7 +12,7 @@ type logUser = {
 };
 
 const register = async (userData: User) => {
-    const response = await axios.post(`${URL}/register`, userData);
+    const response = await axios.post("/api/auth/register", userData);
 
     if (response.data) {
         localStorage.setItem("user", JSON.stringify(response.data));
@@ -23,7 +21,7 @@ const register = async (userData: User) => {
 };
 
 const loginUser = async (userData: logUser) => {
-    const response = await axios.post(`${URL}/login`, userData);
+    const response = await axios.post("/api/auth/login", userData);
 
     if (response.data) {
         localStorage.setItem("user", JSON.stringify(response.data));
