@@ -1,13 +1,19 @@
 const express = require("express");
-const path = require("path");
+
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const connectDB = require("./db/connect");
 require("dotenv").config();
+const checkAuth = require("./middleware/firebaseAuth");
 
 const app = express();
 const server = http.createServer(app);
+
+// Protect your routes
+app.get("/protected-route", checkAuth, (req, res) => {
+    res.send(`Hello, ${req.user.name}`);
+});
 
 // Set up cors
 app.use(

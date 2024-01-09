@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { loginUser, reset } from "../../store/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
+import googleLogin from "../firebase/googleLogin";
+
 import "../css/AuthForms.css";
 
 const Login = () => {
@@ -28,6 +30,10 @@ const Login = () => {
             // @ts-ignore
             dispatch(loginUser(userData));
         }
+    };
+
+    const handleGoogleAuth = async () => {
+        googleLogin();
     };
 
     useEffect(() => {
@@ -61,6 +67,10 @@ const Login = () => {
                     id="password"
                 />
                 <input className="btn" type="submit" value="Log in" />
+
+                <button className="btn" onClick={handleGoogleAuth}>
+                    Log in With Google
+                </button>
                 <Link className="link" to="/register">
                     Sign up
                 </Link>

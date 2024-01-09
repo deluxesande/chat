@@ -7,6 +7,8 @@ const {
 } = require("../jwt/tokens");
 const Chat = require("../models/chatModel");
 
+const checkAuth = require("../middleware/firebaseAuth");
+
 const getAllUSers = asyncWrapper(async (req, res) => {
     const users = await User.find();
     // Implement functionality to return last chat
@@ -15,40 +17,69 @@ const getAllUSers = asyncWrapper(async (req, res) => {
 });
 
 const registerUser = asyncWrapper(async (req, res) => {
-    const userData = req.body;
-    const user = new User(userData);
-    const existsUser = await User.findOne({ username: user.username });
+    // Check if the request contains authentication information
+    let firebaseUser;
+    if (req.headers.authorization) {
+        // The request contains authentication information
+        // Check if the user is signed in with Firebase
+        firebaseUser = checkAuth(req);
+    }
 
-    if (existsUser) res.status(409).json({ message: "User exists" });
+    if (firebaseUser) {
+        // The user is signed in with Firebase
+        // You can now use the firebaseUser object to create a new user in your datab
+    } else {
+        const userData = req.body;
+        const user = new User(userData);
+        const existsUser = await User.findOne({ username: user.username });
 
-    const savedUser = await user.save();
-    const accessToken = await signAccessToken(savedUser.id);
-    const refreshAccessToken = await refreshToken(savedUser.id);
+        if (existsUser) res.status(409).json({ message: "User exists" });
 
-    res.status(201).json({ accessToken, refreshToken: refreshAccessToken });
+        const savedUser = await user.save();
+        const accessToken = await signAccessToken(savedUser.id);
+        const refreshAccessToken = await refreshToken(savedUser.id);
+
+        res.status(201).json({ accessToken, refreshToken: refreshAccessToken });
+    }
 });
 
 const loginUser = asyncWrapper(async (req, res) => {
-    const { username, password } = req.body;
-    if (!username | !password) {
-        res.status(404).json({ message: "Email and Password needed" });
+    // Check if the request contains authentication information
+    let firebaseUser;
+    if (req.headers.authorization) {
+        // The request contains authentication information
+        // Check if the user is signed in with Firebase
+        firebaseUser = checkAuth(req);
     }
 
-    const user = await User.findOne({ username });
-    if (!user) res.status(401).json({ message: "Username/Password invalid" });
+    if (firebaseUser) {
+        // The user is signed in with Firebase
+        // You can now use the firebaseUser object to create a new user in your database
+    } else {
+        // The user is not signed in with Firebase
+        // Continue with the manual email sign in
+        const { username, password } = req.body;
+        if (!username | !password) {
+            res.status(404).json({ message: "Email and Password needed" });
+        }
 
-    const isValid = await user.isValidPassword(password);
-    if (!isValid) {
-        res.status(401).json({ message: "Username/Password invalid" });
+        const user = await User.findOne({ username });
+        if (!user)
+            res.status(401).json({ message: "Username/Password invalid" });
+
+        const isValid = await user.isValidPassword(password);
+        if (!isValid) {
+            res.status(401).json({ message: "Username/Password invalid" });
+        }
+
+        const accessToken = await signAccessToken(user.id);
+        const refreshAccessToken = await refreshToken(user.id);
+        res.status(200).json({
+            user,
+            accessToken,
+            refreshToken: refreshAccessToken,
+        });
     }
-
-    const accessToken = await signAccessToken(user.id);
-    const refreshAccessToken = await refreshToken(user.id);
-    res.status(200).json({
-        user,
-        accessToken,
-        refreshToken: refreshAccessToken,
-    });
 });
 
 const refreshTokens = asyncWrapper(async (req, res) => {
